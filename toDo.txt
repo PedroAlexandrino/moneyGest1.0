@@ -1,0 +1,17 @@
+- passar as apps para o ficheiro das settings
+- fazer os templates base para todas as apps 
+- fazer bd para todas as apps
+- fazer A.I a fazer previzões
+
+
+
+
+
+
+
+
+
+
+
+        ////        //////
+        passar os templates para react.js

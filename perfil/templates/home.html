@@ -12,6 +12,10 @@
     body {
       background-color: #f0f0f0;
     }
+    .navbar-nav .nav-link {
+      color:white; /* Substitua #ff0000 pela cor que desejar */
+    }
+ 
   </style>
 </head>
 
@@ -20,7 +24,7 @@
     <!-- Barra de navegação do Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container">
-        <a class="navbar-brand" href="#">Gestão de Dinheiro</a>
+        <a class="navbar-brand" href="#">MoneyGest</a>
         <!-- Botão de menu responsivo -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,24 +32,34 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Início</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Transações</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Orçamento</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Relatórios</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Configurações</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Sair</a>
-            </li>
+            <div class="d-flex align-items-center">
+                <div id="navOptions" style="display:none;">
+                    <ul class="navbar-nav ms-auto">
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Início</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Transações</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Orçamento</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Relatórios</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Car Gest</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">Configurações</a>
+                      </li><li class="nav-item">
+                        <a class="nav-link" href="#">Sair</a>
+                      </li>
+                    </ul>
+                  </div>
+              <label id="usernameLabel" class="text-light me-2">Nome do Utilizador</label>
+              <button id="toggleNavButton" class="btn btn-primary"><i class="fas fa-bars"></i></i></button>
+            </div>
           </ul>
         </div>
       </div>
@@ -59,7 +73,7 @@
           <div class="card-body">
             <h5 class="card-title">Balanço Financeiro</h5>
             <p class="card-text">Aqui você pode visualizar o seu balanço financeiro atual.</p>
-            <a href="#" class="btn btn-primary">Ver Balanço</a>
+            <button class="btn btn-primary" id="btnVerBalanço"> Ver Balanço</button>
           </div>
         </div>
       </div>
@@ -68,15 +82,130 @@
           <div class="card-body">
             <h5 class="card-title">Transações Recentes</h5>
             <p class="card-text">Veja suas transações mais recentes e mantenha o controle do seu dinheiro.</p>
-            <a href="#" class="btn btn-primary">Ver Transações</a>
+            <button class="btn btn-primary" id="btnVerTransacao">Ver Transações</button>
           </div>
         </div>
       </div>
     </div>
+
+
+
+    <div class="modal fade" id="modalBalanco" tabindex="-1" role="dialog" aria-labelledby="modalBalancoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalBalancoLabel">Balanço Financeiro</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Tabela para o balanço financeiro -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Preencha aqui os dados da tabela para o balanço financeiro -->
+              <tr>
+                <td>2023-07-31</td>
+                <td>Recebimento do Salário</td>
+                <td>R$ 3000,00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para as transações -->
+  <div class="modal fade" id="modalTransacoes" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTransacoesLabel">Transações Recentes</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Tabela para as transações -->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Preencha aqui os dados da tabela para as transações -->
+              <tr>
+                <td>2023-07-31</td>
+                <td>Compra no Supermercado</td>
+                <td>R$ -100,00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
   </main>
 
+  
+
   <!-- Link para o arquivo JavaScript do Bootstrap (opcional, mas alguns recursos do Bootstrap podem precisar disso) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+    $(document).ready(function() {
+        $('#btnVerBalanço').on('click', function() {
+            var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
+            modalBalanco.show();
+        });
+
+        $('#btnVerTransacao').on('click', function() {
+            var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
+            modalTransacoes.show();
+        });
+
+    // Função para alternar a visibilidade das opções de navegação
+    function toggleNavigation() {
+      var navOptions = document.getElementById("navOptions");
+      var usernameLabel = document.getElementById("usernameLabel");
+      var toggleNavButton = document.getElementById("toggleNavButton");
+
+      if (navOptions.style.display === "none") {
+        navOptions.style.display = "block";
+        usernameLabel.style.display = "none";
+        toggleNavButton.innerHTML = `<i class="fas fa-bars"></i>`;
+      } else {
+        navOptions.style.display = "none";
+        usernameLabel.style.display = "inline";
+        toggleNavButton.innerHTML = `<i class="fas fa-bars"></i>`;
+
+      }
+    }
+    // Adiciona o evento de clique no botão para chamar a função de alternar
+    document.getElementById("toggleNavButton").addEventListener("click", toggleNavigation);
+
+    
+})
+  </script>
 </body>
 
 </html>

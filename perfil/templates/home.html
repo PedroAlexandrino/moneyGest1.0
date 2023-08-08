@@ -15,6 +15,18 @@
     .navbar-nav .nav-link {
       color:white; /* Substitua #ff0000 pela cor que desejar */
     }
+    .card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    
+    
  
   </style>
 </head>
@@ -36,7 +48,7 @@
                 <div id="navOptions" style="display:none;">
                     <ul class="navbar-nav ms-auto">
                       <li class="nav-item">
-                        <a class="nav-link" href="#">Início</a>
+                        <a class="nav-link" href="/">Início</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="#">Transações</a>
@@ -48,12 +60,12 @@
                         <a class="nav-link" href="#">Relatórios</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="#">Car Gest</a>
+                        <a class="nav-link" href="/carGest">Car Gest</a>
                       </li>
                       <li class="nav-item">
                         <a class="nav-link" href="#">Configurações</a>
                       </li><li class="nav-item">
-                        <a class="nav-link" href="#">Sair</a>
+                        <a class="nav-link" href="/login">Sair</a>
                       </li>
                     </ul>
                   </div>
@@ -83,6 +95,42 @@
             <h5 class="card-title">Transações Recentes</h5>
             <p class="card-text">Veja suas transações mais recentes e mantenha o controle do seu dinheiro.</p>
             <button class="btn btn-primary" id="btnVerTransacao">Ver Transações</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Historico Financeiro</h5>
+            <p class="card-text">Aqui você pode visualizar o seu historico financeiro atual.</p>
+            <button class="btn btn-primary" id="btnVerBalanço"> Ver Historico</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Historico Gastos</h5>
+            <p class="card-text">Veja o seu de gastos.</p>
+            <button class="btn btn-primary" id="btnVerTransacao">Ver Transações</button>
+          </div>
+        </div>
+      </div>
+
+      
+      <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra -->
+      <div class="col-md-6">
+      <br>
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Agenda Gastos</h5>
+            <p class="card-text">Veja os proximos gastos agendados.</p>
+            <button class="btn btn-primary" id="btnVerTransacao">Ver proximos Gastos</button>
           </div>
         </div>
       </div>
@@ -190,13 +238,21 @@
       var toggleNavButton = document.getElementById("toggleNavButton");
 
       if (navOptions.style.display === "none") {
+        $("#navOptions").slideToggle("slow");
         navOptions.style.display = "block";
         usernameLabel.style.display = "none";
         toggleNavButton.innerHTML = `<i class="fas fa-bars"></i>`;
+       
+
       } else {
-        navOptions.style.display = "none";
-        usernameLabel.style.display = "inline";
+        $("#navOptions").slideToggle("slow");
+        setTimeout(function() {
+          usernameLabel.style.display = "inline";
         toggleNavButton.innerHTML = `<i class="fas fa-bars"></i>`;
+        }, 500);
+     
+
+
 
       }
     }

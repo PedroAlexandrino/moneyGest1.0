@@ -165,6 +165,42 @@
 
 
 
+  <div class="modal fade" id="modalAddCarro" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTransacoesLabel">Adicionar Carro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                <div class="mb-3">
+                    <label for="kmAtuais" class="form-label">Marca/Modelo</label>
+                    <input type="text" class="form-control" id="marca_modelo" required>
+                </div>
+              <div class="mb-3">
+                  <label for="kmAtuais" class="form-label">Marticula</label>
+                  <input type="text" class="form-control" id="matricula" required>
+              </div>
+                    <div class="mb-3">
+                        <label for="kmAtuais" class="form-label">KM Atuais</label>
+                        <input type="text" class="form-control" id="kmAtuais" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="tipoCombustivel" class="form-label">Tipo Combustível</label>
+                      <input type="text" class="form-control" id="tipoCombustivel" required>
+                      <!-- Add dropdown, com opções do combustivel -->
+                  </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" id="btnAddCarro" class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
   <div class="modal fade" id="modalAddAbastecimento" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -183,19 +219,26 @@
                         <label for="precoCombustivel" class="form-label">Preço Combustível/L</label>
                         <input type="text" class="form-control" id="precoCombustivel" required>
                     </div>
-                    <div class="mb-3">
-                      <label for="tipoCombustivel" class="form-label">Tipo Combustível</label>
-                      <input type="text" class="form-control" id="tipoCombustivel" required>
-                  </div>
                   <div class="mb-3">
                     <label for="tipoCombustivel" class="form-label">Litros</label>
-                    <input type="text" class="form-control" id="tipoCombustivel" required>
+                    <input type="text" class="form-control" id="litros" required>
                 </div>
+                <div class="mb-3">
+                  <label for="tipoCombustivel" class="form-label">Carro</label>
+                  <input type="text" class="form-control" placeholder="Selecione o seu carro" id="carro" required>
+
+                  <ul id="dropdown" style="display: none;">
+                    <!-- Já não está aqui a fazer nada pois as opções estão a ser injetadas no js -->
+                    <li>Opção 2</li>
+                    <li>Opção 3</li>
+                </ul>
+
+              </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary">Salvar</button>
+                <button type="button" id="btnAddAbastecimento"class="btn btn-primary">Salvar</button>
             </div>
         </div>
     </div>
@@ -204,7 +247,8 @@
   </main>
 
   
-  <button class="btn btn-primary" id="btnAddAbastecimento">Adicionar abastecimento</button>
+  <button class="btn btn-primary" id="btnAbreAddAbastecimento">Adicionar abastecimento</button>
+  <button class="btn btn-primary" id="btnAbreAddCarro">Adicionar Carro</button>
   <!-- Link para o arquivo JavaScript do Bootstrap (opcional, mas alguns recursos do Bootstrap podem precisar disso) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -213,49 +257,132 @@
 
 
 <script>
-
-document.addEventListener("DOMContentLoaded", function () {
-    // Obtenha o contexto do canvas
-    var ctx = document.getElementById("meuGrafico").getContext("2d");
-
-    // Defina os dados do gráfico (substitua isso pelos seus próprios dados)
-    var data = {
-        labels: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio"],
-        datasets: [{
-            label: "Vendas",
-            data: [50, 60, 70, 65, 80],
-            backgroundColor: "rgba(27, 113, 247, 0.2)",
-            borderColor: "rgba(27, 114, 249, 0.2)",
-            borderWidth: 1
-        }]
-    };
-
-    // Defina as opções do gráfico (personalize conforme necessário)
-    var options = {
-        responsive: true,
-        maintainAspectRatio: false
-    };
-
-    // Crie o gráfico
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: data,
-        options: options
-    });
-});
-
     $(document).ready(function() {
-        $('#btnAddAbastecimento').on('click', function() {
+      // CODIGO PARA ABASTECIMENTO
+
+      const $inputBox = $('#carro');
+      const $dropdown = $('#dropdown');
+
+      function carregarOpcoes() {
+        /* AJAX para ires buscar o json da view que vai dar os carros deste user */
+        const opcoes = ["Carro 1", "Carro 2", "Carro   3"];
+        $dropdown.empty(); // Limpa as opções anteriores
+
+        // Cria elementos li para cada opção e adiciona ao dropdown
+        opcoes.forEach(function(opcao) {
+            const $li = $('<li>').text(opcao);
+            $dropdown.append($li);
+        });
+      }
+
+      // Mostrar o dropdown quando a caixa de entrada de texto é clicada
+      $inputBox.on('click', function() {
+          carregarOpcoes(); // Carrega as opções antes de exibir o dropdown
+          $dropdown.show();
+      });
+
+      // Atualizar o valor da caixa de entrada de texto com a opção selecionada
+      $dropdown.on('click', 'li', function() {
+          $inputBox.val($(this).text());
+          $dropdown.hide();
+      });
+
+
+      $('#btnAbreAddAbastecimento').on('click', function() {
             var modalBalanco = new bootstrap.Modal(document.getElementById('modalAddAbastecimento'));
             modalBalanco.show();
         });
+
+        $(document).on("click", "#btnAddAbastecimento", function () {
+          var id_carro = $("#carro").val();
+          var km_atuais_carro = $("#kmAtuais").val();
+          var litros =  $("#litros").val();
+          var preco_combustivel =  $("#precoCombustivel").val();
+          var valor_pago =  $("#precoCombustivel").val() * $("#litros").val();
+          console.log("FOI CLICADO NO btnAddAbastecimento",id_carro,km_atuais_carro,litros,preco_combustivel,valor_pago);
+
+        $.ajax({
+          type: "GET",
+          url: "/carGest/addAbastecimento/",
+          data: {
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+            id_carro : id_carro,
+            km_atuais_carro : km_atuais_carro,
+            litros: litros,
+            preco_combustivel: preco_combustivel,
+            valor_pago: valor_pago,
+            carro: carro,
+        },
+          success: function () {
+           alert("ABASTECIMENTO ADICIONADO")
+          }});
+
+        });
+      
+        $('#btnAbreAddCarro').on('click', function() {
+            var modaAddCarro = new bootstrap.Modal(document.getElementById('modalAddCarro'));
+            modaAddCarro.show();
+        });
+
+// CODIGO PARA CARRO
+
+        $(document).on("click", "#btnAddCarro", function () {
+          var marca_modelo = $("#marca_modelo").val();
+          var matricula = $("#matricula").val();
+          var kmAtuais =  $("#kmAtuais").val();
+          var tipoCombustivel =  $("#tipoCombustivel").val();
+
+        $.ajax({
+          type: "GET",
+          url: "/carGest/addCarro/",
+          data: {
+            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+            marca_modelo : marca_modelo,
+            matricula : matricula,
+            kmAtuais: kmAtuais,
+            tipoCombustivel: tipoCombustivel,
+        },
+          success: function () {
+           alert("CARRO ADICIONADO")
+          }});
+          
+        });
+
+
         $('#btnVerBalanço').on('click', function() {
             var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
             modalBalanco.show();
         });
 
+        // codigo para clique do botao que vai abrir popup do historico de abastecimentos
         $('#btnVerTransacao').on('click', function() {
             var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
+            var ctx = document.getElementById("meuGrafico").getContext("2d");
+            // Ajax onde vais buscar os dados do grafico quando abres o poupup inicialmente (Media ultimos 6 meses)
+            // Defina os dados do gráfico (substitua isso pelos seus próprios dados)
+            var data = {
+                labels: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio"],
+                datasets: [{
+                    label: "Vendas",
+                    data: [50, 60, 70, 65, 80],
+                    backgroundColor: "rgba(27, 113, 247, 0.2)",
+                    borderColor: "rgba(27, 114, 249, 0.2)",
+                    borderWidth: 1
+                }]
+            };
+
+            // Defina as opções do gráfico (personalize conforme necessário)
+            var options = {
+                responsive: true,
+                maintainAspectRatio: false
+            };
+
+            // Crie o gráfico
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
             modalTransacoes.show();
         });
 

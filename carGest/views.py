@@ -9,6 +9,8 @@ User = get_user_model()
 from datetime import datetime, timedelta
 
 
+"""                     Inicio de codigo para carro                 """
+
 def carGest(request):
     print("entrou no carGest")
     usuario_atual = request.user
@@ -43,6 +45,7 @@ def editCarro(request):
     carro.modelo_carro = request.POST["modelo_carro"]
     carro.km_carro = request.POST["km_carro"]
     carro.tipo_combustivel = request.POST["tipo_combustivel"]
+    carro.save()
 
 
 def getCarro(request=None):
@@ -53,20 +56,44 @@ def getCarro(request=None):
     print("Array carros... ", carros)
     return JsonResponse({"carros":carros, "message":"OK"})
 
+"""                     Fim de codigo para carro                 """
+
+
+
+"""                     Inicio de codigo para Abastecimentos                 """
+
 def addAbastecimento(request):
     print("request-)", request.POST)
-    """ carro = Carro.objects.get(id= request.POST["id_carro"])
-    Abastecimentos(km_atuais_carro = request.POST["km_atuais_carro"],
+    carro = Carro.objects.get(id= request.POST["id_carro"])
+    abastecimento = Abastecimentos(km_atuais_carro = request.POST["km_atuais_carro"],
         litros = request.POST["litros"],
         preco_combustivel = request.POST["preco_combustivel"],
         valor_pago = request.POST["valor_pago"],
         data = request.POST["data"],
-        carro = carro).save() """
-    
+        carro = carro)#.save()
+    return JsonResponse({"message":"OK","abastecimento":abastecimento})   
 
-    ...
 def editAbastecimento(request):
-    ...
+    print("request-)", request.POST)
+    carro = Carro.objects.get(id= request.POST["id_carro"])
+    
+    abastecimento = Abastecimentos.objects.get(id = request.POST["id_abastecimento"])
+
+    abastecimento.km_atuais_carro = request.POST["km_atuais_carro"]
+    abastecimento.litros = request.POST["litros"]
+    abastecimento.preco_combustivel = request.POST["preco_combustivel"]
+    abastecimento.valor_pago = request.POST["valor_pago"]
+    abastecimento.data = request.POST["data"]
+    abastecimento.carro = carro
+    #abastecimento.save()
+    return JsonResponse({"message":"OK","abastecimento":abastecimento})   
+
+
+def deleteAbastecimento(request):
+    print("del --", request.POST)
+    abastecimento = Abastecimentos.objects.get(id = request.POST["id_abastecimento"]).delete()
+    return JsonResponse({"message":"OK","abastecimento":abastecimento})   
+
 
 #func que vai devolver abastecimentos para uma determinada data, em formato json (p grafico)
 def abastecimentosJson(request):
@@ -83,7 +110,12 @@ def abastecimentosJson(request):
         abastecimentos_array.append(i)
     
     #ver se este codigo retorna todos os abastecimentos
-    ...
+    return JsonResponse({"message":"OK","abastecimentos":abastecimentos})   
+
+
+"""                     Fim de codigo para Abastecimentos                 """
+
+
     
 #func que vai devolver os gastos para uma determinada data/total(dsd sempre)
 def gastosJson(request):
@@ -103,6 +135,8 @@ def gastosJson(request):
 def mediaConsumo(request):
     #default são 3 meses, mas tem de dar para reutilizar esta func para dar para mais tempo
     #devolve media de consumo por 100km
+    #também pode devolver um array com todas as medias por mês para o user ver como lista
+    
     
     """ CODIGO PARA DATAS """
     data_atual = datetime.now()

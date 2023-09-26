@@ -19,7 +19,7 @@ class Carro(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.tipo_combustivel} {self.firstmodelo_carro_name} {self.km_carro}"
+        return f"{self.tipo_combustivel} {self.firstmodelo_carro_name} {self.km_carro} : {self.user}"
 
 
 

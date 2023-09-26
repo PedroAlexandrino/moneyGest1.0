@@ -27,8 +27,9 @@ urlpatterns = [
                         #VIEWS DO PERFIL
 
     path('', perfil_views.main, name='main'),
-    path('login/', perfil_views.login, name='login'),
+    path('pagina_login/', perfil_views.pagina_login, name='pagina_login'),
     path('registar/', perfil_views.registar, name='registar'),
+    path('do_login/', perfil_views.do_login, name='do_login'),
 
                         #//// END ////
 

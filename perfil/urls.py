@@ -6,7 +6,8 @@ app_name = "perfil"
 urlpatterns = [
 
 path('', views.main, name='main'),
- path('/login', views.login, name='login'),
-    path('/registar', views.registar, name='registar'),
+path('/pagina_login', views.pagina_login, name='pagina_login'),
+path('/do_login', views.do_login, name='do_login'),
+path('/registar', views.registar, name='registar'),
 
 ]

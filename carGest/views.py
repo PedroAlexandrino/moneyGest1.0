@@ -3,9 +3,13 @@ from .models import Carro, Abastecimentos
 from django.http import JsonResponse
 
 
-# Create your views here.
+from datetime import datetime, timedelta
+
+
 def carGest(request):
     print("entrou no carGest")
+    usuario_atual = request.user
+    print("User---> ", usuario_atual)
     #TENS DE VERIFICAR SE O USER JÁ TEM CARRO, SE NAO TIVER CARRO N PODE ADICIONAR ABASTECIMENTO
     return render(request, "home_car.html")
 
@@ -43,15 +47,47 @@ def editAbastecimento(request):
 
 #func que vai devolver abastecimentos para uma determinada data, em formato json (p grafico)
 def abastecimentosJson(request):
+    #retorna json com todos os abastecimentos Default 3 meses anteriores ao dia atual mas tem de dar para (de x data a x data)
+    """ CODIGO PARA DATAS """
+    data_atual = datetime.now()
+    data_tres_meses_atras = data_atual - timedelta(days=90)
+    data_formatada = data_tres_meses_atras.strftime("%d/%m/%Y")
+    print(data_formatada)
+    """     FIM  """
+    abastecimentos = Abastecimentos.objects.all()
+    abastecimentos_array = []
+    for i in abastecimentos:
+        abastecimentos_array.append(i)
+    
+    #ver se este codigo retorna todos os abastecimentos
     ...
     
 #func que vai devolver os gastos para uma determinada data/total(dsd sempre)
 def gastosJson(request):
     gastos = Abastecimentos.objects.raw(""" SELECT * FROM carGest_abastecimentos, carGest_carro WHERE abastecimentos_id = carro_id """)
+    #Devolve os gastos dos ultimos 3 meses (registos) + total gasto 
+    #ver se dá para categorizar os gastos para teres um grafico redondo onde possas devolvar os gastos por categoria / dentro de um periodo de tempo
+    
+    """ CODIGO PARA DATAS """
+    data_atual = datetime.now()
+    data_tres_meses_atras = data_atual - timedelta(days=90)
+    data_formatada = data_tres_meses_atras.strftime("%d/%m/%Y")
+    print(data_formatada)
+    """     FIM  """
     ...
 
 #func vai devolver para os graficos a media de consumo para a data escolhida ou desde sempre
 def mediaConsumo(request):
+    #default são 3 meses, mas tem de dar para reutilizar esta func para dar para mais tempo
+    #devolve media de consumo por 100km
+    
+    """ CODIGO PARA DATAS """
+    data_atual = datetime.now()
+    data_tres_meses_atras = data_atual - timedelta(days=90)
+    data_formatada = data_tres_meses_atras.strftime("%d/%m/%Y")
+    print(data_formatada)
+    """     FIM  """
+
     ...
 
 

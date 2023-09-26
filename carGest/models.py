@@ -5,6 +5,7 @@ User = get_user_model()
 class TipoCombustivel(models.Model):
     tipo_combustivel = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.CharField(max_length=30,null=True)
+    preco = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f"{self.tipo_combustivel} {self.descricao}"
@@ -15,6 +16,7 @@ class Carro(models.Model):
     modelo_carro = models.CharField(max_length=30)
     km_carro = models.IntegerField()
     tipo_combustivel = models.CharField(max_length=30)  
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.tipo_combustivel} {self.firstmodelo_carro_name} {self.km_carro}"
@@ -29,7 +31,6 @@ class Abastecimentos(models.Model):
     data = models.CharField(max_length=50, null=True)
     carro = models.ManyToManyField(Carro)
     
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.carro} {self.km_atuais_carro} {self.preco_combustivel}$ {self.litros} {self.valor_pago}$ {self.data}"

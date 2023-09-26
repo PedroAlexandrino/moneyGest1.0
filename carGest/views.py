@@ -2,6 +2,9 @@ from django.shortcuts import render
 from .models import Carro, Abastecimentos
 from django.http import JsonResponse
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 
 from datetime import datetime, timedelta
 
@@ -14,14 +17,34 @@ def carGest(request):
     return render(request, "home_car.html")
 
 def addCarro(request):
-    print("request-)", request.POST)
+    print("request-)", request.POST, request.user)
+    user = User.objects.get(user=request.user)
+    print("user_: ", user)
+    Carro(modelo_carro = request.POST["modelo_carro"],
+        km_carro = request.POST["km_carro"],
+        tipo_combustivel = request.POST["tipo_combustivel"],
+        user = request.user)
     """ Carro(modelo_carro= request.POST["modelo_carro"],
         km_carro = request.POST["km_carro"],tipo_combustivel = request.POST["tipo_combustivel"]).save() """
-    ...
+
+
 def delCarro(request):
-    ...
+    print("request", request.POST)
+    carro = Carro.objects.get(id=request.POST["id"])    #TENS DE FORNECER O ID A PAGINA PARA DEPOIS VIR PELOS REQUESTS
+    carro.delete()
+
+
+
+
 def editCarro(request):
-    ...
+    print("request", request.POST)
+    carro = Carro.objects.get(id=request.POST["id"]) 
+
+    carro.modelo_carro = request.POST["modelo_carro"]
+    carro.km_carro = request.POST["km_carro"]
+    carro.tipo_combustivel = request.POST["tipo_combustivel"]
+
+
 def getCarro(request=None):
     carros_bd = Carro.objects.all()
     carros = []

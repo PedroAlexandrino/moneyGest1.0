@@ -16,6 +16,13 @@ def carGest(request):
     usuario_atual = request.user
     print("User---> ", usuario_atual)
     #TENS DE VERIFICAR SE O USER JÁ TEM CARRO, SE NAO TIVER CARRO N PODE ADICIONAR ABASTECIMENTO
+    # aqui tenho de mandar todos os dados para este certo utilizador
+    print("User:", request.user)
+
+    carros = Carro.objects.filter(user=request.user)
+    abastecimentos = Abastecimentos.objects.filter(carro=carros)
+    print("carros",carros, "  Abastecimentos:  ", abastecimentos)
+
     return render(request, "home_car.html")
 
 def addCarro(request):

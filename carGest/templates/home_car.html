@@ -74,7 +74,7 @@
                       </li>
                     </ul>
                   </div>
-              <label id="usernameLabel" class="text-light me-2">Nome do Utilizador</label>
+                  <label id="usernameLabel" class="text-light me-2">{{ user }}</label>
               <button id="toggleNavButton" class="btn btn-primary"><i class="fas fa-bars"></i></i></button>
             </div>
           </ul>
@@ -90,7 +90,7 @@
           <div class="card-body">
             <h5 class="card-title">Metricas do carro</h5>
             <p class="card-text">Aqui você pode visualizar as metricas do seu carro.</p>
-            <button class="btn btn-primary" id="btnVerBalanço"> Ver Balanço</button>
+            <button class="btn btn-primary" id="btnVerMetricas"> Ver Metricas</button>
           </div>
         </div>
       </div>
@@ -99,7 +99,7 @@
           <div class="card-body">
             <h5 class="card-title">Historico abastecimentos</h5>
             <p class="card-text">Veja suas transações mais recentes e mantenha o controle do seu dinheiro.</p>
-            <button class="btn btn-primary" id="btnVerTransacao">Ver Transações</button>
+            <button class="btn btn-primary" id="btnVerAbastecimento">Ver Abastecimentos</button>
           </div>
         </div>
       </div>
@@ -118,23 +118,7 @@
         </div>
         <div class="modal-body">
           <!-- Tabela para o balanço financeiro -->
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Descrição</th>
-                <th>Valor</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Preencha aqui os dados da tabela para o balanço financeiro -->
-              <tr>
-                <td>2023-07-31</td>
-                <td>Recebimento do Salário</td>
-                <td>R$ 3000,00</td>
-              </tr>
-            </tbody>
-          </table>
+         
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -144,7 +128,7 @@
   </div>
 
   <!-- Modal para as transações -->
-  <div class="modal fade" id="modalTransacoes" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel"
+  <div class="modal fade" id="modalHistoricoTransacoes" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -210,10 +194,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <form>
                     <div class="mb-3">
-                        <label for="kmAtuais" class="form-label">KM Atuais</label>
-                        <input type="text" class="form-control" id="kmAtuais" required>
+                        <label for="kmAtuais_abastecimento" class="form-label">KM Atuais</label>
+                        <input type="text" class="form-control" id="kmAtuais_abastecimento" required>
                     </div>
                     <div class="mb-3">
                         <label for="precoCombustivel" class="form-label">Preço Combustível/L</label>
@@ -229,12 +212,10 @@
 
                   <ul id="dropdown" style="display: none;">
                     <!-- Já não está aqui a fazer nada pois as opções estão a ser injetadas no js -->
-                    <li>Opção 2</li>
-                    <li>Opção 3</li>
+                    
                 </ul>
 
               </div>
-                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -255,29 +236,56 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+
 
 <script>
     $(document).ready(function() {
+      var table = $('#dataTable').DataTable({
+                paging: false,
+                info: false,
+                scrollCollapse: true,
+                dom: 'Bfrtip',
+                orderCellsTop: true,
+                buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+            });
+      
       // CODIGO PARA ABASTECIMENTO
 
       const $inputBox = $('#carro');
       const $dropdown = $('#dropdown');
 
-      function carregarOpcoes() {
-        /* AJAX para ires buscar o json da view que vai dar os carros deste user */
-        const opcoes = ["Carro 1", "Carro 2", "Carro   3"];
-        $dropdown.empty(); // Limpa as opções anteriores
-
-        // Cria elementos li para cada opção e adiciona ao dropdown
-        opcoes.forEach(function(opcao) {
-            const $li = $('<li>').text(opcao);
-            $dropdown.append($li);
-        });
-      }
+    
 
       // Mostrar o dropdown quando a caixa de entrada de texto é clicada
       $inputBox.on('click', function() {
-          carregarOpcoes(); // Carrega as opções antes de exibir o dropdown
+        $.ajax({
+        type: "POST",
+        url: "/getCarro/",
+        data: {
+            csrfmiddlewaretoken: '{{csrf_token}}',
+        },
+        success: function (response) {
+            const opcoes = response.carros;
+            const opcoesIds = response.carros_id;
+            $dropdown.empty(); // Limpa as opções anteriores
+
+            // Cria elementos li para cada opção e adiciona ao dropdown
+            for (let i = 0; i < opcoes.length; i++) {
+                const $li = $('<li>');
+                $li.text(opcoes[i]);
+                $li.attr('data-carro-id', opcoesIds[i]); // Define o atributo de dados com o carro_id
+                $dropdown.append($li);
+            }
+        }
+    });
           $dropdown.show();
       });
 
@@ -293,30 +301,41 @@
             modalBalanco.show();
         });
 
-        $(document).on("click", "#btnAddAbastecimento", function () {
-          var id_carro = $("#carro").val();
-          var km_atuais_carro = $("#kmAtuais").val();
+
+        let carroId = null; // Variável para armazenar o carro-id
+      // Vincule o evento click aos elementos <li> para definir o carro-id
+      $dropdown.on('click', 'li', function() {
+          carroId = $(this).data('carro-id');
+      });
+
+
+      $('#btnAddAbastecimento').on('click', function() {
+          var  carro_id = carroId
+          //var id_carro = $("#carro").val();
+          var km_atuais_carro = $("#kmAtuais_abastecimento").val();
           var litros =  $("#litros").val();
           var preco_combustivel =  $("#precoCombustivel").val();
-          var valor_pago =  $("#precoCombustivel").val() * $("#litros").val();
-          console.log("FOI CLICADO NO btnAddAbastecimento",id_carro,km_atuais_carro,litros,preco_combustivel,valor_pago);
+          var valor_pago = preco_combustivel * litros
+          var litros = $("#litros").val();
+          console.log(" CLICADO btnAddAbastecimento",carroId,km_atuais_carro,litros,preco_combustivel,valor_pago);
 
         $.ajax({
-          type: "GET",
-          url: "/carGest/addAbastecimento/",
+          type: "POST",
+          url: "/addAbastecimento/",
           data: {
-            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
-            id_carro : id_carro,
+            csrfmiddlewaretoken: '{{csrf_token}}',
+            id_carro : carro_id,
             km_atuais_carro : km_atuais_carro,
             litros: litros,
             preco_combustivel: preco_combustivel,
             valor_pago: valor_pago,
-            carro: carro,
         },
-          success: function () {
+          success: function (response) {
            alert("ABASTECIMENTO ADICIONADO")
-          }});
-
+           var modalBalanco = new bootstrap.Modal(document.getElementById('modalAddAbastecimento'));
+           modalBalanco.hide();
+          }
+        });
         });
       
         $('#btnAbreAddCarro').on('click', function() {
@@ -331,16 +350,17 @@
           var matricula = $("#matricula").val();
           var kmAtuais =  $("#kmAtuais").val();
           var tipoCombustivel =  $("#tipoCombustivel").val();
+ 
 
         $.ajax({
-          type: "GET",
-          url: "/carGest/addCarro/",
+          type: "POST",
+          url: "/addCarro/",
           data: {
-            csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+            csrfmiddlewaretoken: '{{csrf_token}}',
             marca_modelo : marca_modelo,
             matricula : matricula,
-            kmAtuais: kmAtuais,
-            tipoCombustivel: tipoCombustivel,
+            km_carro: kmAtuais,
+            tipo_combustivel: tipoCombustivel,
         },
           success: function () {
            alert("CARRO ADICIONADO")
@@ -349,22 +369,26 @@
         });
 
 
-        $('#btnVerBalanço').on('click', function() {
-            var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
-            modalBalanco.show();
-        });
+        $('#btnVerMetricas').on('click', function() {
+            var modalBalanco = new bootstrap.Modal(document.getElementById('modalHistoricoTransacoes'));
+            $.ajax({
+            type: "POST",
+            url: "/abastecimentosJson/",
+            data: {
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              opcao:1,
+        },
+          success: function (response) {
+            // CRIAR TABELA COM TODOS OS ABASTECIMENTOS
 
-        // codigo para clique do botao que vai abrir popup do historico de abastecimentos
-        $('#btnVerTransacao').on('click', function() {
-            var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
-            var ctx = document.getElementById("meuGrafico").getContext("2d");
-            // Ajax onde vais buscar os dados do grafico quando abres o poupup inicialmente (Media ultimos 6 meses)
-            // Defina os dados do gráfico (substitua isso pelos seus próprios dados)
-            var data = {
-                labels: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio"],
+           console.log("response --> ",  response["media"])
+           var ctx = document.getElementById("meuGrafico").getContext("2d");
+           
+           var data = {
+                labels: Object.keys(response["media"]),
                 datasets: [{
-                    label: "Vendas",
-                    data: [50, 60, 70, 65, 80],
+                    label: "Consumo medio",
+                    data: Object.values(response["media"]).map(Number),
                     backgroundColor: "rgba(27, 113, 247, 0.2)",
                     borderColor: "rgba(27, 114, 249, 0.2)",
                     borderWidth: 1
@@ -384,6 +408,64 @@
                 options: options
             });
             modalTransacoes.show();
+          }
+        });
+
+        modalBalanco.show();
+        });
+
+        // codigo para clique do botao que vai abrir popup do historico de abastecimentos
+        $('#btnVerAbastecimento').on('click', function() {
+            var modalTransacoes = new bootstrap.Modal(document.getElementById('modalBalanco'));
+            // Ajax onde vais buscar os dados do grafico quando abres o poupup inicialmente (Media ultimos 6 meses)
+            // Defina os dados do gráfico (substitua isso pelos seus próprios dados)
+            $.ajax({
+            type: "POST",
+            url: "/abastecimentosJson/",
+            data: {
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              opcao:0, //OPÇ 0 para a func retornar json para colocar na tabela
+        },
+        success: function (response) {
+            var table = $('<table>').addClass('display');
+            var thead = $('<thead>');
+            var tbody = $('<tbody>');
+
+            // Cabeçalho da tabela
+            var headerRow = $('<tr>');
+            headerRow.append($('<th>').text('KM andados'));
+            headerRow.append($('<th>').text('Litros'));
+            headerRow.append($('<th>').text('€/combustivel'));
+            headerRow.append($('<th>').text('€ total'));
+            headerRow.append($('<th>').text('data'));
+
+            thead.append(headerRow);
+            table.append('</tr></thead>');
+
+            // Linhas de dados com base na resposta da requisição
+            for (var i = 0; i < response["abastecimentos"].length; i++) {
+            console.log("resposta-> ", response["abastecimentos"])
+
+                var dataRow = $('<tr style="text-align: center">');
+                dataRow.append($('<td>').text(response["abastecimentos"][i].km_atuais_carro));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].litros));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].preco_combustivel));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].valor_pago));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].data));
+                tbody.append(dataRow);
+                table.append('</tr>');
+            }
+
+            table.append('</tbody>')
+            table.append(thead);
+            table.append(tbody);
+
+            // Adiciona a tabela ao modal
+            $('#modalBalanco .modal-body').html(table);
+
+            modalTransacoes.show();
+        }
+        });
         });
 
     // Função para alternar a visibilidade das opções de navegação

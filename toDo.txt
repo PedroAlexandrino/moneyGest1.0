@@ -8,8 +8,16 @@ Criar um ficheiro base para os imports (preferencia localmente/static)
 
 
 Historico do carGest tem de aparecer quantos km fez entre o atual abastecimento e o anteriror
+-       mas não precisa de ser um campo na bd, pode ser um campo no array que mandas para a view
+        linha 157 -> "  for i in abastecimentos.values():" neste ciclo
 
 
+grafico do carGest tem de dar para 3 opçoes
+1 Default -> 6 meses anteriores
+2 AnoCompleto -> mostra todos os meses até ao inicio do ano atual
+3 Historico -> mostra os dados todos da bd e o grafico tem de se adaptar (com o scroll) (modal também tem de mudar  tamanho)
+
+(       GRAFICO TEM DE DAR PARA MEDIA/KM , KM ANDADOS E OUTRAS METRICAS QUE O UTILIZADOR POSSA ESCOLHER               )
 
 
 
@@ -20,3 +28,20 @@ Historico do carGest tem de aparecer quantos km fez entre o atual abastecimento 
 
         ////        //////
         passar os templates para react.js
+
+
+o que falta 24/10:
+        carGest
+- Por o html do carGest mais bonito
+- Confirmar se o calculo das medias está sempre correto
+
+        MoneyGest
+- Criar sistema de notificações para futuros agendamentos
+- fazer funcionar todos os poupups
+
+        API
+- fazer ligação com api para obter preços do combustivel
+- fazer pagina onde podes ver com graficos os historicos de cada tipo de combustivel
+        -ver se dá para obter preços por gasolineira/localização escolhida pelo user
+- fazer decision tree para fazer previsões para o futuro 
+

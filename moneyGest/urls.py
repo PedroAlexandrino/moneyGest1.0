@@ -38,8 +38,15 @@ urlpatterns = [
                         #VIEWS DO CARGEST
                         
     path('carGest/', carGest_views.carGest, name='carGest'),
+    path('addCarro/', carGest_views.addCarro, name='addCarro'),
+    path('getCarro/', carGest_views.getCarro, name='getCarro'),
+    path('addAbastecimento/', carGest_views.addAbastecimento, name='addAbastecimento'),
+    
+    path('abastecimentosJson/', carGest_views.abastecimentosJson, name='abastecimentosJson'),
+
     
                         #//// END ////
+
 
 
     

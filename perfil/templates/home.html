@@ -96,23 +96,32 @@
     </nav>
   </header>
 
+
+        <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra 
+        MOSTRA Grafico
+      -->
+
   <main class="container mt-4">
     <div class="row">
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Balanço Financeiro</h5>
-            <p class="card-text">Aqui você pode visualizar o seu balanço financeiro atual.</p>
-            <button class="btn btn-primary" id="btnVerBalanço"> Ver Balanço</button>
+            <h5 class="card-title">Balanço </h5>
+            <p class="card-text">Aqui pode visualizar o seu balanço financeiro atual.</p>
+            <button class="btn btn-primary" id="btnVerBalanco"> Ver Balanço</button>
           </div>
         </div>
       </div>
+
+            <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra 
+        MOSTRA TABELA
+      -->
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Transações Recentes</h5>
             <p class="card-text">Veja suas transações mais recentes e mantenha o controle do seu dinheiro.</p>
-            <button class="btn btn-primary" id="btnVerTransacao">Ver Transações</button>
+            <button class="btn btn-primary" id="btnVerTransacaoRecente">Ver Transações</button>
           </div>
         </div>
       </div>
@@ -120,40 +129,52 @@
 
     <br>
 
+
+         <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra 
+        MOSTRA Grafico
+      -->
     <div class="row">
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Historico Financeiro</h5>
-            <p class="card-text">Aqui você pode visualizar o seu historico financeiro atual.</p>
-            <button class="btn btn-primary" id="btnVerBalanço"> Ver Historico</button>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">Historico Gastos</h5>
-            <p class="card-text">Veja o seu de gastos.</p>
-            <button class="btn btn-primary" id="btnVerTransacao">Ver Transações</button>
+            <p class="card-text">Aqui você pode visualizar o seu historico financeiro, permite ver balanço total nos diferentes meses.</p>
+            <button class="btn btn-primary" id="btnVerHistoricoTransacoes"> Ver Historico Financeiro</button>
           </div>
         </div>
       </div>
 
+           <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra 
+        MOSTRA TABELA
+      -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Historico Gastos</h5>
+            <p class="card-text">Veja o seu historico de gastos.</p>
+            <button class="btn btn-primary" id="btnVerHistoricoGastos">Ver Historico Gastos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
       
-      <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra -->
+      <!-- Aqui podes fazer uma validação, se o utilizador tiver algum gasto agendado este card mostra, se nao nao mostra 
+        MOSTRA TABELA
+      -->
+      <div class="row">
       <div class="col-md-6">
       <br>
         <div class="card">
           <div class="card-body">
             <h5 class="card-title">Agenda Gastos</h5>
             <p class="card-text">Veja os proximos gastos agendados.</p>
-            <button class="btn btn-primary" id="btnVerTransacao">Ver proximos Gastos</button>
+            <button class="btn btn-primary" id="btnVerAgendaGastos">Ver proximos Gastos</button>
           </div>
         </div>
       </div>
     </div>
-
+  </div>
 
 
     <div class="modal fade" id="modalBalanco" tabindex="-1" role="dialog" aria-labelledby="modalBalancoLabel"
@@ -230,7 +251,7 @@
     // Obtenha o contexto do canvas
     var ctx = document.getElementById("meuGrafico").getContext("2d");
 
-    // Defina os dados do gráfico (substitua isso pelos seus próprios dados)
+    // Deficao dos dados do gráfico
     var data = {
         labels: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio"],
         datasets: [{
@@ -256,13 +277,31 @@
     });
 });
 
+
+
+
     $(document).ready(function() {
-        $('#btnVerBalanço').on('click', function() {
+        $('#btnVerBalanco').on('click', function() {
             var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
             modalBalanco.show();
         });
 
-        $('#btnVerTransacao').on('click', function() {
+        $('#btnVerTransacaoRecente').on('click', function() {
+          var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
+            modalTransacoes.show()
+        });
+
+        $('#btnVerHistoricoTransacoes').on('click', function() {
+            var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
+            modalBalanco.show();
+        });
+
+        $('#btnVerHistoricoGastos').on('click', function() {
+            var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
+            modalTransacoes.show();
+        });
+
+        $('#btnVerAgendaGastos').on('click', function() {
             var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
             modalTransacoes.show();
         });

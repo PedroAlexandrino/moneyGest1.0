@@ -35,3 +35,7 @@ class Abastecimentos(models.Model):
 
     def __str__(self):
         return f"{self.carro}: {self.km_atuais_carro} {self.preco_combustivel}$ {self.litros} {self.valor_pago}$ {self.data}"
+
+
+# se a nova transação tiver uma descrição = a algum tipo de combustivel = ao tipo de combustivel de qualquer um dos carros do user, 
+# o user tem de ser redirecionado para a pagina carGest com uma mensagem do porquê do mesmo ocorrer

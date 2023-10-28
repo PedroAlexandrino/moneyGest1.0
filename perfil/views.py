@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout,login
 from django.contrib import auth
+from django.contrib.auth import get_user_model
+
+from .models import Carteira, Categoria, Transacao_Carteira
+User = get_user_model()
 
 def main(request):
     print("request.user---",request.user)
@@ -58,3 +62,54 @@ def registar(request):
 
 def home(request=None):
     return 
+
+def addCarteira(request = None):
+    print("REQUEST--)",request.POST)
+    user = User.objects.get(username=request.user)
+    carteira = Carteira.objects(saldo=request.POST["valor_pago"],
+    data = "falta codigo para data",
+    user = user).save()
+    
+    return render(request, "home.html",{"user": user})
+
+def addTransacao(request = None):
+    print("REQUEST--)",request.POST)
+    user = User.objects.get(username=request.user)
+    carteira = Carteira.objects.filter(user=user) # tens de encontrar a carteira que vem no request
+    print("len user: ", len(user), "len Carteira: ", len(carteira))
+    #adicionar os valores do request a uma nova instancia da class Transacao_Carteira e fazer .save()
+    #tens de subtrair do teu saldo atual o preco que user pagou, guardar novo valor do saldo sendo este um many to one
+    Transacao_Carteira.objects(descricao=request.POST["descricao"],
+    data = "falta codigo para data",
+    valor_pago = request.POST["valor_pago"],
+    quantidade= request.POST["quantidade"],
+    carteira = carteira)
+
+def transacoesRecentesJson(request = None):
+    print("request-)",request.POST)
+    user = User.objects.get(username=request.user)
+    carteira = Carteira.objects.filter(user=user)
+
+    transacoes = Transacao_Carteira.objects.filter(
+        descricao = request.POST["descricao"],
+        valor_pago = request.POST["valor_pago"],
+        categoria = request.POST["categoria"],
+        quantidade = request.POST["quantidade"],
+        data = request.POST["data"], # vais ter de substituir 
+        carteira= carteira).save()
+    print("len user: ", len(user), "len Carteira: ", len(carteira), "len transacoes: ", len(transacoes))
+    
+
+def balancoJson(request= None):
+    #aqui queres compor os dados para um grafico onde vais ver as datas e o dinheiro que tinhas nessa data
+    print("REQ",request.POST)
+
+def historicoFincanceiroJson(request= None):
+    print("REQ",request.POST)
+
+def historicoGastosJson(request= None):
+    print("REQ",request.POST)
+
+def agendamentosGastosJson(request= None):
+    print("REQ",request.POST)
+

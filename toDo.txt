@@ -45,3 +45,8 @@ o que falta 24/10:
         -ver se dá para obter preços por gasolineira/localização escolhida pelo user
 - fazer decision tree para fazer previsões para o futuro 
 
+
+
+era fixe ser criada automaticamente uma view para o utilizador logado para cada uma das tabelas
+ou arranjar maneira de quando o user loga no site consigas criar uma var global com o filtro (tipo view) para ser mais rapido estas querys
+ 

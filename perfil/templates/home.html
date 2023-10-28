@@ -237,6 +237,81 @@
   </div>
   </main>
 
+
+
+  <div class="modal fade" id="modalAddTransacao" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTransacoesLabel">Adicionar Transacao</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="kmAtuais_abastecimento" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="txt_descricao" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="precoCombustivel" class="form-label">Custo</label>
+                        <input type="text" class="form-control" id="txt_custo" required>
+                    </div>
+                  <div class="mb-3">
+                    <label for="tipoCombustivel" class="form-label">Quantidade</label>
+                    <input type="text" class="form-control" id="txt_quantidade" required>
+                </div>
+                <div class="mb-3">
+                  <label for="tipoCombustivel" class="form-label">Carteira</label>
+                  <input type="text" class="form-control" placeholder="Selecione o seu carro" id="carteira" required>
+
+                  <ul id="dropdown" style="display: none;">
+                    <!-- Já não está aqui a fazer nada pois as opções estão a ser injetadas no js -->
+                    
+                </ul>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" id="btnSaveTransacao"class="btn btn-primary">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAddCarteira" tabindex="-1" role="dialog" aria-labelledby="modalTransacoesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalTransacoesLabel">Adicionar Carteira</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+          </div>
+          <div class="modal-body">
+                  <div class="mb-3">
+                      <label for="kmAtuais_abastecimento" class="form-label">Nome</label>
+                      <input type="text" class="form-control" id="txt_nome_carteira" required>
+                  </div>
+                  <div class="mb-3">
+                      <label for="precoCombustivel" class="form-label">Saldo</label>
+                      <input type="text" class="form-control" id="txt_saldo_carteira" required>
+                  </div>
+                <div class="mb-3">
+                  <label for="tipoCombustivel" class="form-label">Adicionar amigos</label>
+                  <input type="text" class="form-control" id="amigos" required>
+              </div>
+
+            </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+              <button type="button" id="btnSaveCarteira"class="btn btn-primary">Salvar</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<button class="btn btn-primary" id="btnAbreModalTransacao"> Nova Transacao</button>
+<button class="btn btn-primary" id="btnAbreModalCarteira"> Nova Carteira</button>
+<button class="btn btn-primary" id="btnAbreModalEditCarteira"> Editar Carteira</button>
+<button class="btn btn-primary" id="btnImportExcelCarGest"> import Excel CarGest</button>
   
 
   <!-- Link para o arquivo JavaScript do Bootstrap (opcional, mas alguns recursos do Bootstrap podem precisar disso) -->
@@ -282,28 +357,158 @@
 
     $(document).ready(function() {
         $('#btnVerBalanco').on('click', function() {
+          /* Aqui tens de criar um grafico para mostrar no modal, se calhar podes usar só 1 modal */
             var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
+            $.ajax({
+            type: "POST",
+            url: "/verValanco*/",
+            data: {
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              opcao:1,
+        },
+          success: function (response) {
+           console.log("response --> ",  response)
+           var ctx = document.getElementById("meuGrafico").getContext("2d");
+           var data = {
+                labels: Object.keys(response["media"]),
+                datasets: [{
+                    label: "Consumo medio",
+                    data: Object.values(response["media"]).map(Number),
+                    backgroundColor: "rgba(27, 113, 247, 0.2)",
+                    borderColor: "rgba(27, 114, 249, 0.2)",
+                    borderWidth: 1
+                }]
+            };
+            // Defina as opções do gráfico (personalize conforme necessário)
+            var options = {
+                responsive: true,
+                maintainAspectRatio: false
+            };
+            // Crie o gráfico
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options
+            });
             modalBalanco.show();
+
+          }
         });
+
+
+        });
+
 
         $('#btnVerTransacaoRecente').on('click', function() {
+          /* Aqui tens de criar uma tabela para mostrar no modal */
           var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
-            modalTransacoes.show()
+          $.ajax({
+            type: "POST",
+            url: "/transacoesRecentesJson*/",
+            data: {
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              opcao:0, //OPÇ 0 para a func retornar json para colocar na tabela
+        },
+        success: function (response) {
+            var table = $('<table>').addClass('display');
+            var thead = $('<thead>');
+            var tbody = $('<tbody>');
+
+            // Cabeçalho da tabela
+            var headerRow = $('<tr>');
+            headerRow.append($('<th>').text('KM andados'));
+            headerRow.append($('<th>').text('Litros'));
+            headerRow.append($('<th>').text('€/combustivel'));
+            headerRow.append($('<th>').text('€ total'));
+            headerRow.append($('<th>').text('data'));
+
+            thead.append(headerRow);
+            table.append('</tr></thead>');
+
+            // Linhas de dados com base na resposta da requisição
+            for (var i = 0; i < response["abastecimentos"].length; i++) {
+            console.log("resposta-> ", response["abastecimentos"])
+
+                var dataRow = $('<tr style="text-align: center">');
+                dataRow.append($('<td>').text(response["abastecimentos"][i].km_atuais_carro));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].litros));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].preco_combustivel));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].valor_pago));
+                dataRow.append($('<td>').text(response["abastecimentos"][i].data));
+                tbody.append(dataRow);
+                table.append('</tr>');
+            }
+
+            table.append('</tbody>')
+            table.append(thead);
+            table.append(tbody);
+
+            // Adiciona a tabela ao modal
+            $('#modalBalanco .modal-body').html(table);
+
+            modalTransacoes.show();
+        }
+        });
         });
 
+
         $('#btnVerHistoricoTransacoes').on('click', function() {
+            /* Aqui tens de criar um grafico para mostrar no modal */
             var modalBalanco = new bootstrap.Modal(document.getElementById('modalBalanco'));
             modalBalanco.show();
         });
 
+
         $('#btnVerHistoricoGastos').on('click', function() {
+          /* Aqui tens de criar uma tabela para mostrar no modal */
             var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
             modalTransacoes.show();
         });
 
+
         $('#btnVerAgendaGastos').on('click', function() {
+          /* Aqui tens de criar uma tabela para mostrar no modal */
             var modalTransacoes = new bootstrap.Modal(document.getElementById('modalTransacoes'));
             modalTransacoes.show();
+        });
+
+        /*          CODIGO PARA ADICIONAR/EDITAR TRANSAÇÕES        */
+        $('#btnAbreModalTransacao').on('click', function() {
+            /* Aqui tens de criar um grafico para mostrar no modal */
+            var modalAddTransacao = new bootstrap.Modal(document.getElementById('modalAddTransacao'));
+            modalAddTransacao.show();
+        });
+
+        $dropdown.on('click', 'li', function() {
+          carroId = $(this).data('carro-id');
+          /* ESTA VAR vem da view quando abres a pagina, tens de passar os ids das carteiras associadas
+          */
+      });
+
+        $('#btnSaveTransacao').on('click', function() {
+            /* Aqui tens de criar um grafico para mostrar no modal */
+            var  id_carteira = carroId
+            var descricao = $("#txt_descricao").val();
+            var descricao = $("#txt_custo").val();
+            var descricao = $("#txt_quantidade").val();
+            /* falta ajax */
+        });
+
+        /*          CODIGO PARA ADICIONAR/EDITAR CARTEIRAS        */
+
+        $('#btnAbreModalCarteira').on('click', function() {
+            /* Aqui tens de criar um grafico para mostrar no modal */
+            var modalAddCarteira = new bootstrap.Modal(document.getElementById('modalAddCarteira'));
+            modalAddCarteira.show();
+        });
+
+        $('#btnSaveCarteira').on('click', function() {
+            /* Aqui tens de criar um grafico para mostrar no modal */
+            var nome_carteira = $("#txt_nome_carteira").val();
+            var nome_carteira = $("#txt_saldo_carteira").val();
+            var nome_carteira = $("#amigos").val();
+            /* falta ajax */
+
         });
 
     // Função para alternar a visibilidade das opções de navegação

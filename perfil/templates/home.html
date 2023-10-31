@@ -479,21 +479,37 @@
             modalAddTransacao.show();
         });
 
-        $dropdown.on('click', 'li', function() {
+      /*   $dropdown.on('click', 'li', function() {
           carroId = $(this).data('carro-id');
           /* ESTA VAR vem da view quando abres a pagina, tens de passar os ids das carteiras associadas
-          */
-      });
+          
+      }); */
 
         $('#btnSaveTransacao').on('click', function() {
             /* Aqui tens de criar um grafico para mostrar no modal */
-            var  id_carteira = carroId
+            //var  id_carteira = carroId
             var descricao = $("#txt_descricao").val();
-            var descricao = $("#txt_custo").val();
-            var descricao = $("#txt_quantidade").val();
-            /* falta ajax */
+            var txt_custo = $("#txt_custo").val();
+            var txt_quantidade = $("#txt_quantidade").val();
+            console.log(descricao, txt_custo, txt_quantidade)
+            $.ajax({
+              type: "POST",
+              url: "/addTransacao/",
+              data: {
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                descricao : descricao,
+                txt_custo : txt_custo,
+                txt_quantidade : txt_quantidade,
+            },
+              success: function (response) {
+              alert("Carteira Adicionada")
+              var modalAddCarteira = new bootstrap.Modal(document.getElementById('modalAddCarteira'));
+              modalAddCarteira.hide();
+              }
+          });
+          
         });
-
+      
         /*          CODIGO PARA ADICIONAR/EDITAR CARTEIRAS        */
 
         $('#btnAbreModalCarteira').on('click', function() {
@@ -505,12 +521,24 @@
         $('#btnSaveCarteira').on('click', function() {
             /* Aqui tens de criar um grafico para mostrar no modal */
             var nome_carteira = $("#txt_nome_carteira").val();
-            var nome_carteira = $("#txt_saldo_carteira").val();
-            var nome_carteira = $("#amigos").val();
-            /* falta ajax */
-
+            var saldo_carteira = $("#txt_saldo_carteira").val();
+            //var nome_carteira = $("#amigos").val();
+          $.ajax({
+            type: "POST",
+            url: "/addCarteira/",
+            data: {
+              csrfmiddlewaretoken: '{{csrf_token}}',
+              nome_carteira : nome_carteira,
+              saldo_carteira : saldo_carteira,
+          },
+            success: function (response) {
+            alert("Carteira Adicionada")
+            var modalAddCarteira = new bootstrap.Modal(document.getElementById('modalAddCarteira'));
+            modalAddCarteira.hide();
+            }
         });
-
+        });
+      
     // Função para alternar a visibilidade das opções de navegação
     function toggleNavigation() {
       var navOptions = document.getElementById("navOptions");

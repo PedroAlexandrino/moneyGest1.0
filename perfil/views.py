@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import logout,login
 from django.contrib import auth
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 
 from .models import Carteira, Categoria, Transacao_Carteira
 User = get_user_model()
@@ -56,7 +57,6 @@ def registar(request):
             print("User iniciou sessão",user)
         else:
             print("User NÂO iniciou sessão",user)
-
     return render(request, "registar.html")
 
 
@@ -66,23 +66,31 @@ def home(request=None):
 def addCarteira(request = None):
     print("REQUEST--)",request.POST)
     user = User.objects.get(username=request.user)
-    carteira = Carteira.objects(saldo=request.POST["valor_pago"],
+    carteira = Carteira(saldo=request.POST["saldo_carteira"],
     data = "falta codigo para data",
-    user = user).save()
-    
+    user = user)#.save()
+
     return render(request, "home.html",{"user": user})
+
+def getCarteiras(request= None):
+    user = User.objects.get(username=request.user)
+    carteiras = Carteira.objects.filter(user=user)
+    carteiras_json = []
+    for i in carteiras:
+        carteiras_json += i.nome
+    return JsonResponse({"message":"OK","carteiras":carteiras_json})   
 
 def addTransacao(request = None):
     print("REQUEST--)",request.POST)
     user = User.objects.get(username=request.user)
     carteira = Carteira.objects.filter(user=user) # tens de encontrar a carteira que vem no request
-    print("len user: ", len(user), "len Carteira: ", len(carteira))
+    print("len user: ",user, "len Carteira: ", len(carteira))
     #adicionar os valores do request a uma nova instancia da class Transacao_Carteira e fazer .save()
     #tens de subtrair do teu saldo atual o preco que user pagou, guardar novo valor do saldo sendo este um many to one
-    Transacao_Carteira.objects(descricao=request.POST["descricao"],
+    Transacao_Carteira(descricao=request.POST["descricao"],
     data = "falta codigo para data",
-    valor_pago = request.POST["valor_pago"],
-    quantidade= request.POST["quantidade"],
+    valor_pago = request.POST["txt_custo"],
+    quantidade= request.POST["txt_quantidade"],
     carteira = carteira)
 
 def transacoesRecentesJson(request = None):

@@ -5,9 +5,12 @@ User = get_user_model()
 
 
 class Carteira(models.Model):
+    nome = models.CharField(max_length=50, null=True)
+    descricao = models.CharField(max_length=256, null=True)
     saldo = models.DecimalField(max_digits=10, decimal_places=2) #pode ser uma many to one para manteres um hstorico de saldo
     data = models.CharField(max_length=50, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True) #Aqui poderá ser um many to many porque assim podes adicionar varias pessoas à mesma carteria
+    # falta adicionar um nome e uma descricao (descricao é para o que serve a carteira/para adicionar no perfil)
     
 
     def __str__(self):

@@ -30,6 +30,10 @@ urlpatterns = [
     path('pagina_login/', perfil_views.pagina_login, name='pagina_login'),
     path('registar/', perfil_views.registar, name='registar'),
     path('do_login/', perfil_views.do_login, name='do_login'),
+    #working on
+    path('addCarteira/', perfil_views.addCarteira, name='addCarteira'),
+    path('addTransacao/', perfil_views.addTransacao, name='addTransacao'),
+    path('getCarteiras/', perfil_views.getCarteiras, name='getCarteiras'),
 
                         #//// END ////
 
